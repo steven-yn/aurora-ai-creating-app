@@ -1,8 +1,10 @@
 'use client';
 
 import { fetchGenerationResult, generateImg2Video } from '@/services/stablilty';
+import { RootState } from '@/store';
 import { Button } from '@nextui-org/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const GenerateVideo = () => {
   const count = useRef(0);
@@ -11,8 +13,12 @@ const GenerateVideo = () => {
   const [videoId, setVideoId] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
 
+  const clientReceivedImage = useSelector(
+    (state: RootState) => state.imageData.clientReceived,
+  );
+
   const postGenerateImg2Video = async () => {
-    const res = await generateImg2Video();
+    const res = await generateImg2Video(clientReceivedImage.url);
 
     setVideoId(res.id);
   };
@@ -64,14 +70,18 @@ const GenerateVideo = () => {
           remove timer
         </Button>
       </div>
-
-      {!videoUrl && <p className="text-slate-100">loading...</p>}
+      <img src={clientReceivedImage.url} />
       {videoUrl && (
         <>
           <video src={videoUrl} controls></video>
-          <a className="text-slate-100" href={videoUrl} download="video.mp4">
-            download video
-          </a>
+          <Button
+            as="a"
+            className="text-slate-100"
+            href={videoUrl}
+            download="video.mp4"
+          >
+            동영상 다운로드
+          </Button>
         </>
       )}
     </div>

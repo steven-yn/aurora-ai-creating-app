@@ -1,12 +1,8 @@
 import FormData from 'form-data';
 
-export const generateImg2Video = async () => {
-  const fileRes = await fetch(
-    'http://localhost:3000/api/file?path=/public/dalmi.jpeg',
-  );
-  const body = await fileRes.arrayBuffer();
-
-  const blob = new Blob([body], { type: 'image/jpeg' });
+export const generateImg2Video = async (createdUrl: string) => {
+  const res = await fetch(createdUrl);
+  const blob = await res.blob();
 
   const mockData = new FormData();
   mockData.append('image', blob, 'dalmi.jpeg');
